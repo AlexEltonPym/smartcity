@@ -1,0 +1,60 @@
+├── council\ survey\ data
+│   └── Cronulla\ Park\ Master\ Plan\ Consultation\ Deidentifie.._.xlsx #not enough data so unused
+├── creds.json #google translate credentials, do not publicise
+├── facebook
+│   ├── facebook\ denial.png #visual proof of denial for permissions
+│   ├── fbAnalysis.py #analyses sachin's facebook data -> processedFBData.json and fb-docbyword.csv
+│   ├── fb_logan_city.txt #sachin's facebook raw txt file
+│   ├── ourApp
+│   │   ├── FB\ Submission\ Video.mov #screengrab video used for second facebook submission
+│   │   └── index.html #facebook login implementation for permission approval
+│   ├── processedFBData.json #json collection of analysed facebook data
+│   └── tdm
+│       └── fb-docbyword.csv #tdm for sachin's facebook data
+├── news
+│   ├── manual
+│   │   ├── news.txt #manually collected news file
+│   │   ├── newsAnalysis.py #manually collected news analyser
+│   │   ├── processedNews.json #json collection of analysed manual news data
+│   │   └── tdm
+│   │       └── news-docbyword.csv #tdm for manually collected news
+│   └── trawler
+│       ├── articles
+│       │   ├─- #contains various downloaded html articles
+│       ├── articlesClean #paragraphs extracted from articles matching queries
+│       │   ├── cronullaPark.txt 
+│       │   ├── fiveDock.txt
+│       │   ├── parramattaRoad.txt
+│       │   └── yarrabilba.txt
+│       ├── autoNewsAnalysis.py #analyses cleaned articles
+│       ├── autorip.sh #automatically downloads, cleans and analyses articles
+│       ├── newsTidy.py #cleans downloaded articles
+│       ├── processedAutoNews.json #json collection of analysed autoripped news
+│       ├── tdm #contains tdms for any successful queries
+│       └── urls.txt #list of urls to scrape for articles
+├── sTwitter
+│   ├── data #sachin's raw twitter data
+│   │   ├── dock.txt
+│   │   ├── logan.txt
+│   │   ├── parra.txt
+│   │   ├── spring.txt
+│   │   └── yara.txt
+│   ├── processedSTwitterData.json #json colelction of sachin's twitter data
+│   ├── sTwitterAnalysis.py #processes then analyses sachin's raw data
+│   └── tdm #tdms for each of sachin's topics
+│       ├── sTwitter-dock-docbyword.csv
+│       ├── sTwitter-logan-docbyword.csv
+│       ├── sTwitter-parra-docbyword.csv
+│       └── sTwitter-yara-docbyword.csv
+├── twitter
+│   ├── processedTwitterData.json #json collection of fresh twitter data
+│   ├── tdm #tdms for each query
+│   │   ├── cronulla\ park-docbyword.csv
+│   │   ├── five\ dock-docbyword.csv
+│   │   ├── parramatta\ road-docbyword.csv
+│   │   └── yarrabilba-docbyword.csv
+│   ├── twitter.json #json collection of raw twitter data
+│   ├── twitter.py #twitter data collector
+│   └── twitterAnalysis.py #analyses raw twitter data
+└── visualisations
+    ├── sentimentScatter.html #plots documents by sentiment and subjectivity
