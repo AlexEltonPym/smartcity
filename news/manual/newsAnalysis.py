@@ -1,3 +1,4 @@
+#manually downloaded news analyser
 import io
 import json
 import nltk
@@ -15,19 +16,21 @@ import nltk
 from google.cloud import translate
 import six
 
+#must include your google translate credentials
 translate_client = translate.Client.from_service_account_json('../creds.json')
 
-
+#translates text to any target language
 def translate_text(target, text):
-
+	#check text is a fine format for translation api
     if isinstance(text, six.binary_type):
         text = text.decode('utf-8')
-
+	#translate api call
     result = translate_client.translate(
         text, target_language=target)
 
     return result
 
+#initialise text processing
 stopwords = set(stopwords.words('english'))
 whitelist = ['']
 blacklist = ['https']
@@ -43,6 +46,7 @@ with open("news.txt", "U") as rawDataFile:
 	dataFile = rawDataFile.read()
 	readingBody = True
 
+	#split my custom data format
 	lines = dataFile.split('\n\n')
 	for line in lines:
 		split = line.partition(' ')
@@ -64,10 +68,10 @@ with open("news.txt", "U") as rawDataFile:
 			readingBody = False
 		else:
 			
-			#clean words: remove stops, query words and white/blacklist
+			#translate
 			translation = translate_text("en", line)
 			translated = TextBlob(translation['translatedText'])
-
+			#clean words: remove stops, query words and white/blacklist
 
 			words = translated.words
 			cleanedWords = []

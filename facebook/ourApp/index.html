@@ -15,7 +15,9 @@
   </head>
   <body>
     <div id="fb-root"></div>
-    <script>(function(d, s, id) {
+    <script>
+    //facebook login
+    (function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
       js = d.createElement(s); js.id = id;
@@ -24,22 +26,18 @@
     }(document, 'script', 'facebook-jssdk'));
     
     var successfulLogin = function(){
-
-       
     }
 
+    //stub for search interaction
     var runSearch = function(){
         var nameValue = document.getElementById("pageID").value;
-
         console.log("downloading page contents of: " + nameValue);
     }
-
-
     </script>
 
     <h2>Facebook page downloader</h2>
     <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false" onlogin="successfulLogin"></div>
-<br><br>
+    <br><br>
     <input type="text" name="pid" id="pageID" value="" placeholder="FB Page Name" />
     <button onclick="runSearch()">Download public page content...</button>
 

@@ -1,3 +1,4 @@
+#This program analyses the fb_logan_city.txt file sachin prepared.
 import io
 import json
 import nltk
@@ -15,24 +16,23 @@ import nltk
 from google.cloud import translate
 import six
 
+#must include your google translate credentials
 translate_client = translate.Client.from_service_account_json('../creds.json')
 
+#translates text to any target language
 def translate_text(target, text):
-
+	#check text is a fine format for translation api
     if isinstance(text, six.binary_type):
         text = text.decode('utf-8')
-
+	#translate api call
     result = translate_client.translate(
         text, target_language=target)
-
     return result
 
-
-posts = []
-
+posts = [] #array of text posts
 with open("fb_logan_city.txt", "r") as dataFile:
 
-
+	#fancy string manipulation to extract text data
 	for line in dataFile:
 		first = line.split("u'message': u")
 		second = first[1].split(", u'id':")
@@ -42,14 +42,17 @@ with open("fb_logan_city.txt", "r") as dataFile:
 
 outputJson = {}
 
+#initialise text processing
 stopwords = set(stopwords.words('english'))
-whitelist = ['']
-blacklist = ['https']
+whitelist = [''] #currently not provided
+blacklist = ['https'] #currently not provided
 
 dirname = os.path.dirname(__file__)
 
+#prepare output json with "query" set to fb
 outputJson["fb"] = []
 
+#initialise tdm generator
 tdm = textmining.TermDocumentMatrix()
 
 matrix = []
@@ -57,11 +60,11 @@ docs = []
 
 j = 0
 for post in posts:
-
-	#clean words: remove stops, query words and white/blacklist
+	#translate to english
 	translation = translate_text("en", post)
 	translated = TextBlob(translation['translatedText'])
 
+	#clean words: remove stops, query words, white/blacklist and undefined words
 	words = translated.words
 	cleanedWords = []
 	for word in words:
@@ -90,6 +93,7 @@ for post in posts:
 		j = j + 1
 
 
+#generate tdm
 i = 0
 for row in tdm.rows(cutoff=1): #cutoff controls the number of times docs a words must be in to count
 	if i == 0: 
