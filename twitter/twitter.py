@@ -8,6 +8,8 @@ import io
 import json
 import os
 import datetime
+import fileinput
+
 
 #environment variables for Somwrita's twitter application
 #do not push environment variables to the git
@@ -21,8 +23,14 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
 
-#query list
-queries = ['parramatta road', 'five dock', 'yarrabilba', 'cronulla park']
+queries = []
+
+#process stdin query list
+for line in fileinput.input():
+    queries.append(line[:-1]) #remove \n
+
+print("Searching these queries:")
+print(queries)
 
 tweetJson = {}
 
