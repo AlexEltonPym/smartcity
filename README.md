@@ -8,8 +8,9 @@ See documentation/fileStructure.txt for directory/file details.
 
 ### Prerequisites
 
-Add credential file for google translate
-Add environment variables for twitter trawler
+1. Add credential file for google translate
+
+2. Add environment variables for twitter trawler
 
 ### Installing
 
@@ -22,9 +23,9 @@ git clone https://github.com/AlexEltonPym/smartcity.git
 
 3. Install any python dependancies you don't have
 
-### Usage
+## Usage
 
-## Running the data collectors
+### Running the data collectors
 
 Navigate to relevant folder then run:
 
@@ -43,7 +44,9 @@ python3 twitter.py
 python3 newsTidy.py
 ```
 
-## Running the data analysers
+### Running the data analysers
+
+*all analysers that translate text require google api credentials*
 
 Navigate to relevant folder then run:
 
@@ -81,7 +84,7 @@ python3 autoNewsAnalysis.py
 python3 fbAnalysis.py
 ```
 
-## Running the data visualisers
+### Running the data visualisers
 
 *make sure you setup which data, clusters and colours you want to use*
 
@@ -101,7 +104,7 @@ or
 http://localhost:8080/visualisations/sentimentScatterWithTopic.html
 ```
 
-## Manually adding news articles
+### Manually adding news articles
 
 Add articles to end of news.txt with following format:
 
