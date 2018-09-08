@@ -4,6 +4,8 @@ This is the code to collect and analyse data from various social media sources f
 
 ## Getting Started
 
+See documentation/fileStructure.txt for directory/file details.
+
 ### Prerequisites
 
 Add credential file for google translate
@@ -48,6 +50,7 @@ Navigate to relevant folder then run:
 **Twitter** analyser:
 
 *make sure you set the relevant twitter data file to analyse*
+
 *requires twitter api credentials*
 
 ```
@@ -92,7 +95,9 @@ Navigate, in your browser, to:
 
 ```
 http://localhost:8080/visualisations/sentimentScatter.html
+
 or
+
 http://localhost:8080/visualisations/sentimentScatterWithTopic.html
 ```
 
@@ -128,7 +133,7 @@ TITLE: Next article...
 
 ## Authors
 
-* **Alex ELton-Pym** - *Repository owner*
+* **Alex Elton-Pym** - *Repository owner*
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
