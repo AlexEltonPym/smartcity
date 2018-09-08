@@ -1,3 +1,4 @@
+#analyses sachin's twitter data
 import io
 import json
 import nltk
@@ -16,14 +17,15 @@ from google.cloud import translate
 import six
 
 import time
+#requires translation credentials
 translate_client = translate.Client.from_service_account_json('../creds.json')
 
-
+#translates text to target language
 def translate_text(target, text):
-
+	#make sure we have a workable encoding
     if isinstance(text, six.binary_type):
         text = text.decode('utf-8')
-
+	#api call
     result = translate_client.translate(
         text, target_language=target)
 
@@ -37,15 +39,14 @@ blacklist = ['https']
 dirname = os.path.dirname(__file__)
 outputJson = {}
 
-
 for filename in filenames:
 	print(filename)
 	tweets = []
 
+	#magic string manipulation for sachin's data
 	with open("data/"+filename+".txt", "r") as dataFile:
-
 		for line in dataFile:
-			if filename == "logan" or filename == "yara":
+			if filename == "logan" or filename == "yara": #special cases
 				trip = line.partition(' ')
 				if trip[0].isdigit():
 					tweets.append(trip[2])
@@ -54,24 +55,18 @@ for filename in filenames:
 			else:
 				tweets.append(line)
 
-
-
 	outputJson[filename] = []
-
 	tdm = textmining.TermDocumentMatrix()
-
 	matrix = []
 	docs = []
 
 	j = 0
 	for tweet in tweets:
-
-		#clean words: remove stops, query words and white/blacklist
-
-		print(tweet)
+		#translate text
 		translation = translate_text("en", tweet)
 		translated = TextBlob(translation['translatedText'])
 
+		#clean words: remove stops, query words and white/blacklist
 		words = translated.words
 		cleanedWords = []
 		for word in words:

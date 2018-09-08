@@ -71,8 +71,8 @@ with open("news.txt", "U") as rawDataFile:
 			#translate
 			translation = translate_text("en", line)
 			translated = TextBlob(translation['translatedText'])
+			
 			#clean words: remove stops, query words and white/blacklist
-
 			words = translated.words
 			cleanedWords = []
 			for word in words:
@@ -125,7 +125,6 @@ with open("news.txt", "U") as rawDataFile:
 			j = j + 1
 
 		#File saving
-
 		filename = os.path.join(dirname, 'tdm/news-docbyword.csv')
 		with open(filename, 'w') as myfile:
 			wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)

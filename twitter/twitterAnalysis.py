@@ -1,3 +1,4 @@
+#analysis for twitter trawlled data
 import io
 import json
 import nltk
@@ -13,34 +14,33 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import nltk
 
-
 from google.cloud import translate
 import six
 
+#must include google translate credentials
 translate_client = translate.Client.from_service_account_json('../creds.json')
 
-
+#translates text to target language
 def translate_text(target, text):
-
+	#ensure usable encoding for api
     if isinstance(text, six.binary_type):
         text = text.decode('utf-8')
 
+	#api call
     result = translate_client.translate(
         text, target_language=target)
-
     return result
 
-
-
+#CHANGE TO CURRENT TARGET ̑
 with open("twitter.json", "r") as dataFile:
 	jsonData = json.load(dataFile)
 
 outputJson = {}
 
+#initialise text processor
 stopwords = set(stopwords.words('english'))
 whitelist = ['']
 blacklist = ['https']
-
 
 dirname = os.path.dirname(__file__)
 
@@ -48,6 +48,7 @@ for query in jsonData:
 	queryWords = TextBlob(query).words
 	outputJson[query] = []
 
+	#intitalise tdm generator
 	tdm = textmining.TermDocumentMatrix()
 	matrix = []
 	docs = []
@@ -55,7 +56,7 @@ for query in jsonData:
 	j = 0
 
 	for tweet in jsonData[query]:
-
+		#translate text
 		translation = translate_text("en", tweet['text'])
 		translated = TextBlob(translation['translatedText'])
 
@@ -88,7 +89,7 @@ for query in jsonData:
 				outputJson[query].append(tempElement)
 			j = j + 1
 
-
+	#construct tdm
 	i = 0
 	for row in tdm.rows(cutoff=1): #cutoff controls the number of times docs a words must be in to count
 		if i == 0: 
@@ -104,7 +105,6 @@ for query in jsonData:
 		printable = [['Document/Word']]
 		printable[0].extend(docs) #add docs across top
 
-
 		j = 0
 		for word in wordsFull:
 			line = []
@@ -114,7 +114,6 @@ for query in jsonData:
 			j = j + 1
 
 		#File saving
-
 		filename = os.path.join(dirname, 'tdm/' + query + '-docbyword.csv')
 		with open(filename, 'w') as myfile:
 			wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)

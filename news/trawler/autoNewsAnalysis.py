@@ -1,3 +1,4 @@
+#analyses automatically downloaded articles
 import io
 import json
 import nltk
@@ -12,7 +13,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import nltk
 
-
+#intitalise text processing
 stopwords = set(stopwords.words('english'))
 whitelist = ['']
 blacklist = ['https']
@@ -24,6 +25,7 @@ tdm = textmining.TermDocumentMatrix()
 matrix = []
 docs = []
 
+#titles but not actual query
 majorQueryNames = ['parramattaRoad', 'fiveDock', 'cronullaPark', 'yarrabilba']
 
 for queryName in majorQueryNames:
@@ -36,10 +38,9 @@ for queryName in majorQueryNames:
 		lines = dataFile.split('\n')
 		for line in lines:	
 
-			#clean words: remove stops, query words and white/blacklist
 			translated = TextBlob(line) #no translation because articles are english only
 
-
+			#clean words: remove stops, query words and white/blacklist
 			words = translated.words
 			cleanedWords = []
 			for word in words:

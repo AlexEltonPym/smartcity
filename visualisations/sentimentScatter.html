@@ -2,253 +2,251 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Scatter sentiment</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <style>
-    body {
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      margin: auto;
-      position: relative;
-      width: 1000px;
-    }
+	<meta charset="utf-8">
+	<title>Scatter sentiment</title>
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<style>
+		body {
+			font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+			margin: auto;
+			position: relative;
+			width: 1000px;
+		}
 
+		#tooltip {
+			position: absolute;
+			width: 200px;
+			height: auto;
+			padding: 10px;
+			background-color: white;
+			-webkit-border-radius: 10px;
+			-moz-border-radius: 10px;
+			border-radius: 10px;
+			-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+			-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+			box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+			pointer-events: none;
+		}
 
-    #tooltip {
-      position: absolute;
-      width: 200px;
-      height: auto;
-      padding: 10px;
-      background-color: white;
-      -webkit-border-radius: 10px;
-      -moz-border-radius: 10px;
-      border-radius: 10px;
-      -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-      -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-      pointer-events: none;
-    }
+		#tooltip.hidden {
+			display: none;
+		}
 
-    #tooltip.hidden {
-      display: none;
-    }
+		#tooltip p {
+			margin: 0;
+			font-family: sans-serif;
+			font-size: 12px;
+			line-height: 20px;
+		}
 
-    #tooltip p {
-      margin: 0;
-      font-family: sans-serif;
-      font-size: 12px;
-      line-height: 20px;
-    }
+		#info {
+			transform: translate(0px, 50px);
+		}
 
-
-    #info {
-      transform: translate(0px, 50px);
-      /* Equal to translateX(10px) */
-    }
-
-    #info p {
-      padding-left: 60px;
-      padding-top: 0px;
-      margin: 0;
-    }
-  </style>
+		#info p {
+			padding-left: 60px;
+			padding-top: 0px;
+			margin: 0;
+		}
+	</style>
 
 </head>
 
 <body>
-  <div id="info" translate="0, 100">
-    <p class="titlePiece">Query:
-      <strong id="qName"></strong>
-      <strong id="qFound"></strong>
-    </p>
+	<div id="info" translate="0, 100">
+		<p class="titlePiece">Query:
+			<strong id="qName"></strong>
+			<strong id="qFound"></strong>
+		</p>
 
-  </div>
+	</div>
 
-  <div id="tooltip" class="hidden">
-    <p>
-      <strong id="polarity">0.0</strong>
-    </p>
-    <p>
-      <strong id="subjectivity">0.0</strong>
-    </p>
-    <p style="font-size: 10px; line-height: 10px;" id="user_location"></span>
-      <p> <strong>  Full Tweet: </strong> </p>
+	<div id="tooltip" class="hidden">
+		<p>
+			<strong id="polarity">0.0</strong>
+		</p>
+		<p>
+			<strong id="subjectivity">0.0</strong>
+		</p>
+		<p style="font-size: 10px; line-height: 10px;" id="user_location"></span>
+			<p> <strong>  Full Tweet: </strong> </p>
 
-    <p style="font-size: 10px; line-height: 10px;" id="tweet_text"></span>
-     <p> <strong>  Processed Words: </strong> </p>
-    <p style="font-size: 10px; line-height: 10px;" id="tweet_words"></span>
+		<p style="font-size: 10px; line-height: 10px;" id="tweet_text"></span>
+		 <p> <strong>  Processed Words: </strong> </p>
+		<p style="font-size: 10px; line-height: 10px;" id="tweet_words"></span>
 
-    </p>
-  </div>
+		</p>
+	</div>
 
-  <script>
+	<script>
+		//visualises the sentiment of tweets
 
-   // var interp = d3.interpolateRgb("black", "LightGrey");
-   var interp = d3.interpolateRgb("red", "green");
-    var formatter = d3.format(".2f");
+		//black and white version
+		// var interp = d3.interpolateRgb("black", "LightGrey");
 
-    var queriesFullName = ['five dock', 'logan', 'parramatta road', 'yarrabilba'];
+		//red and green version
+		var interp = d3.interpolateRgb("red", "green");
+		var formatter = d3.format(".2f");
 
-    d3.json("processedSTwitterData.json").then(function (jsonData) {
-      var queries = Object.keys(jsonData);
-      var currentQuery = 0;
+		var queriesFullName = ['five dock', 'logan', 'parramatta road', 'yarrabilba'];
 
-      var dataset = jsonData[queries[currentQuery]];
+		//select data to visualise
+		d3.json("processedSTwitterData.json").then(function (jsonData) {
+			var queries = Object.keys(jsonData);
+			var currentQuery = 0;
 
-      var w = 600;
-      var h = 400;
+			var dataset = jsonData[queries[currentQuery]];
 
-      var padding = 60;
+			//design variables for visual designer
+			var w = 600;
+			var h = 400;
+			var padding = 60;
 
-      var yScale = d3.scaleLinear().domain([-1, 1]).range([h - padding, padding]); //sentiment polarity
-      var xScale = d3.scaleLinear().domain([0, 1]).range([padding, w - padding]);  //subjectivity
+			var yScale = d3.scaleLinear().domain([-1, 1]).range([h - padding, padding]); //sentiment polarity
+			var xScale = d3.scaleLinear().domain([0, 1]).range([padding, w - padding]);  //subjectivity
 
-      var yAxis = d3.axisLeft(yScale);
-      var xAxis = d3.axisBottom(xScale);
+			var yAxis = d3.axisLeft(yScale);
+			var xAxis = d3.axisBottom(xScale);
 
-        d3.select("#qName").text("\'" + queriesFullName[currentQuery] + "\'");
-        d3.select("#qFound").text(dataset.length);
+			//title piece with number of tweets for each query
+				d3.select("#qName").text("\'" + queriesFullName[currentQuery] + "\'");
+				d3.select("#qFound").text(dataset.length);
 
-      var svg = d3.select("body")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h);
+			var svg = d3.select("body")
+				.append("svg")
+				.attr("width", w)
+				.attr("height", h);
 
-      svg.selectAll("circle")
-        .data(dataset)
-        .enter()
-        .append("circle")
-        .attr("cx", function (d) {
-          return xScale(d.subjectivity); //Need to add some shift space. 
-        })
-        .attr("cy", function (d) {
-          return yScale(d.polarity);
-        })
-        .attr("r", function (d) {
-          return 2;
-        })
-        .attr("fill", function (d) {
+			svg.selectAll("circle")
+				.data(dataset)
+				.enter()
+				.append("circle")
+				.attr("cx", function (d) {
+					return xScale(d.subjectivity);
+				})
+				.attr("cy", function (d) {
+					return yScale(d.polarity);
+				})
+				.attr("r", function (d) {
+					return 2;
+				})
+				.attr("fill", function (d) {
+					return interp((d.polarity + 1) / 2); //colouring by scale
+				});
 
+			//other graph elements
+			svg.append("g")
+				.attr("class", "leftAxis")
+				.attr("transform", "translate(" + padding + ",0)")
+				.call(yAxis);
 
-          return interp((d.polarity + 1) / 2);
-        });
+			svg.append("g")
+				.attr("class", "bottomAxis")
+				.attr("transform", "translate(0, " + (h - padding) + ")")
+				.call(xAxis);
 
-      svg.append("g")
-        .attr("class", "leftAxis")
-        .attr("transform", "translate(" + padding + ",0)")
-        .call(yAxis);
+			svg.append("line")
+				.attr("class", 'd3-dp-line')
+				.attr("x1", padding)
+				.attr("y1", h / 2)
+				.attr("x2", w - padding)
+				.attr("y2", h / 2)
+				.style("stroke-dasharray", ("5, 5"))
+				.style("stroke-opacity", 0.8)
+				.style("stroke", "#000");
 
-      svg.append("g")
-        .attr("class", "bottomAxis")
-        .attr("transform", "translate(0, " + (h - padding) + ")")
-        .call(xAxis);
+			svg.append("text")
+				.attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+				.attr("transform", "translate(" + (padding / 2) + "," + (h / 2) + ")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+				.text("Polarity");
 
-      svg.append("line")
-        .attr("class", 'd3-dp-line')
-        .attr("x1", padding)
-        .attr("y1", h / 2)
-        .attr("x2", w - padding)
-        .attr("y2", h / 2)
-        .style("stroke-dasharray", ("5, 5"))
-        .style("stroke-opacity", 0.8)
-        .style("stroke", "#000");
+			svg.append("text")
+				.attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+				.attr("transform", "translate(" + (w / 2) + "," + (h - (padding / 3)) + ")")  // centre below axis
+				.text("Subjectivity");
 
-      svg.append("text")
-        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-        .attr("transform", "translate(" + (padding / 2) + "," + (h / 2) + ")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
-        .text("Polarity");
+			//bind hover method
+			svg.selectAll("circle").on("mouseover", function (d) {
+				hoverMethod(d, d3.select(this));
+			});
 
-      svg.append("text")
-        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-        .attr("transform", "translate(" + (w / 2) + "," + (h - (padding / 3)) + ")")  // centre below axis
-        .text("Subjectivity");
+			svg.selectAll("circle").on("mouseout", function (d) { //reset fill on mouse out
+				d3.select("#tooltip").classed("hidden", true);
+			});
 
+			//click to view other queries
+			svg.on("click", function () {
+				currentQuery = currentQuery + 1;
+				currentQuery = currentQuery % queries.length;
+				dataset = jsonData[queries[currentQuery]];
 
-      svg.selectAll("circle").on("mouseover", function (d) {
-        hoverMethod(d, d3.select(this));
-      });
+				let circles = svg.selectAll("circle")
+					.data(dataset);
 
-      svg.selectAll("circle").on("mouseout", function (d) { //reset fill on mouse out
-        d3.select("#tooltip").classed("hidden", true);
-      });
+				//repeated code for updating elements
+				circles.exit()
+					.remove(); //remove unneeded circles
+				circles.enter() //add new circles
+					.append("circle")
+					.attr("cx", function (d) {
+						return xScale(d.subjectivity);
+					})
+					.attr("cy", function (d) {
+						return yScale(d.polarity);
+					})
+					.attr("r", function (d) {
+						return 2;
+					})
+					.attr("fill", function (d) {
+						return interp((d.polarity + 1) / 2);
+					})
+					.on("mouseover", function (d) {
+						hoverMethod(d, d3.select(this));
+					})
+					.on("mouseout", function (d) {
+						d3.select("#tooltip").classed("hidden", true);
+					})
+					.merge(circles) //merge new and remaining circles
+					.attr("cx", function (d) {
+						return xScale(d.subjectivity);
+					})
+					.attr("cy", function (d) {
+						return yScale(d.polarity);
+					})
+					.attr("r", function (d) {
+						return 2;
+					})
+					.attr("fill", function (d) {
+						return interp((d.polarity + 1) / 2);
+					});
 
-      svg.on("click", function () {
-        currentQuery = currentQuery + 1;
-        currentQuery = currentQuery % queries.length;
-        dataset = jsonData[queries[currentQuery]];
+				//update title piece
+				d3.select("#qName").text("\'" + queriesFullName[currentQuery] + "\'");
+				d3.select("#qFound").text(dataset.length);
+			});
+		});
 
-        let circles = svg.selectAll("circle")
-          .data(dataset);
+		function hoverMethod(d, me) {
+			//get tooltip location
+			var xPosition = parseFloat(me.attr("cx"));
+			var yPosition = parseFloat(me.attr("cy"));
 
-        circles.exit()
-          .remove();//remove unneeded circles
-        circles.enter()
-          .append("circle")
-          .attr("cx", function (d) {
-            return xScale(d.subjectivity); //Need to add some shift space. 
-          })
-          .attr("cy", function (d) {
-            return yScale(d.polarity);
-          })
-          .attr("r", function (d) {
-            return 2;
-          })
-          .attr("fill", function (d) {
-            return interp((d.polarity + 1) / 2);
-          })
-          .on("mouseover", function (d) {
-            hoverMethod(d, d3.select(this));
-          })
-          .on("mouseout", function (d) { //reset fill on mouse out
-            d3.select("#tooltip").classed("hidden", true);
-          })
-          .merge(circles)
-          .attr("cx", function (d) {
-            return xScale(d.subjectivity); //Need to add some shift space. 
-          })
-          .attr("cy", function (d) {
-            return yScale(d.polarity);
-          })
-          .attr("r", function (d) {
-            return 2;
-          })
-          .attr("fill", function (d) {
-            return interp((d.polarity + 1) / 2);
-          });
+			//update tooltip location and value
+			d3.select("#tooltip")
+				.style("left", xPosition + "px")
+				.style("top", yPosition + "px");
+			d3.select("#polarity")
+				.text('Polarity: ' + formatter(d.polarity));
+			d3.select("#subjectivity")
+				.text('Subjectivity: ' + formatter(d.subjectivity));
+			d3.select("#tweet_text")
+				.text(d.text);
+			d3.select("#tweet_words")
+				.text(d.cleanedWords.join(", "));
 
-        d3.select("#qName").text("\'" + queriesFullName[currentQuery] + "\'");
-        d3.select("#qFound").text(dataset.length);
-      });
-    });
-
-    function hoverMethod(d, me) {
-
-      //get tooltip location
-      var xPosition = parseFloat(me.attr("cx"));
-      var yPosition = parseFloat(me.attr("cy"));
-
-      //update tooltip location and value
-      d3.select("#tooltip")
-        .style("left", xPosition + "px")
-        .style("top", yPosition + "px");
-      d3.select("#polarity")
-        .text('Polarity: ' + formatter(d.polarity));
-      d3.select("#subjectivity")
-        .text('Subjectivity: ' + formatter(d.subjectivity));
-     // d3.select("#user_location")
-     //   .text(d.location);
-      d3.select("#tweet_text")
-        .text(d.text);
-      d3.select("#tweet_words")
-        .text(d.cleanedWords.join(", "));
-
-
-      d3.select("#tooltip").classed("hidden", false);
-
-    }
-
-
-  </script>
+			d3.select("#tooltip").classed("hidden", false);
+		}
+	</script>
 </body>
 
 </html>
