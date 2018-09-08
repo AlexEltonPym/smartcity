@@ -53,8 +53,9 @@
 │   │   ├── five\ dock-docbyword.csv
 │   │   ├── parramatta\ road-docbyword.csv
 │   │   └── yarrabilba-docbyword.csv
-│   ├── twitter.json #json collection of raw twitter data
+│   ├── data #captured twitter data
 │   ├── twitter.py #twitter data collector
 │   └── twitterAnalysis.py #analyses raw twitter data
 └── visualisations
     ├── sentimentScatter.html #plots documents by sentiment and subjectivity
+    ├── sentimentScatterWithTopic.html #plots documents by sentiment and subjectivity with topic colouring
