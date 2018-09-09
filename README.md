@@ -253,15 +253,9 @@ cronulla park
 
 We have applied for public page content access twice. Both times have been rejected:
 
-```
-"Your screencast doesn't show how the use of this permission 
-directly improves the user experience in your app. 
-Unfortunately, we also weren't able to determine this 
-from testing your app manually.
-All permissions data must be visibly used within your app. 
-We do not accept permission requests for data that 
-you may decide to use later."
-```
+>"Your screencast doesn't show how the use of this permission directly improves the user experience in your app. Unfortunately, we also weren't able to determine this from testing your app manually.
+All permissions data must be visibly used within your app. We do not accept permission requests for data that you may decide to use later."
+
 
 In summary, because we don't show the data being used in the dashboard, Facebook will not approve collecting data yet.
 
