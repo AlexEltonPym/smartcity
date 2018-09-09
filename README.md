@@ -183,7 +183,7 @@ cronulla park
 ```
 
 ## File structure
-
+```
 ├── council\ survey\ data
 │   └── Cronulla\ Park\ Master\ Plan\ Consultation\ Deidentifie.._.xlsx #not enough data so unused
 ├── creds.json #google translate credentials, do not publicise
@@ -245,6 +245,7 @@ cronulla park
 └── visualisations
     ├── sentimentScatter.html #plots documents by sentiment and subjectivity
     ├── sentimentScatterWithTopic.html #plots documents by sentiment and subjectivity with topic colouring
+```
 
 ## Avenues explored
 
