@@ -38,10 +38,11 @@ python3 twitter.py
 **News** trawler:
 
 *note only brisbane times and syndey morning herald supported*
+*note this script will automatically backup the last run*
+*note this script will automatically run the data anlysis*
 
 ```
 ./autoRip.sh
-python3 newsTidy.py
 ```
 
 ### Running the data analysers
@@ -74,6 +75,8 @@ python3 newsAnalysis.py
 
 **Trawler News** analyser:
 
+*note this is automatically run during autorun.sh*
+
 ```
 python3 autoNewsAnalysis.py
 ```
@@ -103,6 +106,7 @@ or
 
 http://localhost:8080/visualisations/sentimentScatterWithTopic.html
 ```
+## Updating data andd queries
 
 ### Manually adding news articles
 
@@ -130,6 +134,52 @@ Second user comment (optional)
 Third user comment (optional)
 
 TITLE: Next article...
+```
+
+### Adding urls for news trawling
+
+*note only brisbane times and sydney morning herald are supported*
+
+Add urls to end of urls.txt:
+
+```
+https://www.smh.com.au/politics/nsw
+https://www.smh.com.au/national/nsw
+https://www.smh.com.au/politics/queensland
+https://www.smh.com.au/national/queensland
+https://www.brisbanetimes.com.au/politics/queensland
+https://www.brisbanetimes.com.au/national/queensland
+https://www.brisbanetimes.com.au/politics/nsw
+https://www.brisbanetimes.com.au/national/nsw
+
+```
+
+*This will search any articles will links from those pages which are subdomains of those urls*
+
+### Adding queries for news trawling
+
+Add queries to newsTidy.py:
+
+```
+queries = [
+	['westconnex', 'parramatta road'], #parramatta road queries
+	['five dock'], 	#five dock queries
+	['cronulla park', 'logan'], #cronulla park queries
+	['yarrabilba', 'cedargrove', 'treatment plant', 'springwood', 'logan'] #yarrabilba queries
+]
+```
+
+*Any articles with text that matches a query will be kept and added to the major topic (parramatta road, five dock, cronulla park and yarrabilba)*
+
+### Adding queries for twitter trawling
+
+Add queries to queries file, one query per line.
+
+```
+parramatta road
+five dock
+yarrabilba
+cronulla park
 ```
 
 ### Additonal information

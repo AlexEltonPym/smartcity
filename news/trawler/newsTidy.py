@@ -14,7 +14,8 @@ queries = [
 majorSets = [set() for index in range(len(majorQueryNames))]
 
 for line in fileinput.input(): #for each file
-	ofile = open("articles/" + line[0:-1]) #remove \n from line and open file
+	fullPath = "articles/" + line[0:-1]
+	ofile = open(fullPath) #remove \n from line and open file
 	soup = BeautifulSoup(ofile, "lxml") #convert html file to a soup object
 	paras = soup("p") #find all paragraphs
 
