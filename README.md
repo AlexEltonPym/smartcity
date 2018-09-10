@@ -216,6 +216,7 @@ cronulla park
 │       ├── autorip.sh #automatically downloads, cleans and analyses articles
 │       ├── newsTidy.py #cleans downloaded articles
 │       ├── processedAutoNews.json #json collection of analysed autoripped news
+│       ├── articlesBackup/ #zip archive of news downloads
 │       ├── tdm #contains tdms for any successful queries
 │       └── urls.txt #list of urls to scrape for articles
 ├── sTwitter
@@ -240,6 +241,7 @@ cronulla park
 │   │   ├── parramatta\ road-docbyword.csv
 │   │   └── yarrabilba-docbyword.csv
 │   ├── data #captured twitter data
+│	├── queries #list of quries to search
 │   ├── twitter.py #twitter data collector
 │   └── twitterAnalysis.py #analyses raw twitter data
 └── visualisations
