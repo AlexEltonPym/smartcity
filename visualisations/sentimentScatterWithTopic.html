@@ -98,7 +98,7 @@
 	d3.csv("clusterData/logan.csv").then(function (loganCluster) {
 	d3.csv("clusterData/yarra.csv").then(function (yarraCluster) {
 
-	var currentCluster = 2; //manual selection of cluster
+	var currentCluster = 0; //manual selection of cluster
 	var clusterArray = [fiveCluster, loganCluster, parraCluster, yarraCluster];
 
 	var queries = Object.keys(jsonData);
@@ -253,6 +253,7 @@
 				return "#33A1DE";
 			} else {
 				return interp((datum.polarity + 1) / 2);
+				//return "rgba(0,0,0,0)";
 			}
 
 	}
