@@ -54,6 +54,11 @@
 
 <body>
   <div id="info" translate="0, 100">
+			<p class="titlePiece">Query:
+					<strong id="qName"></strong>
+					<span>Cluster:</span>
+					<strong id="currentCluster"></strong>
+				</p>
   </div>
 
   <div id="tooltip" class="hidden">
@@ -76,8 +81,6 @@
   <script>
 	//visualises clusters by colour ontop of sentiment positions
 
-	//cluster to highlight
-	var currentCluster = 1;
 	var interp = d3.interpolateRgb("red", "green");
 	var formatter = d3.format(".2f");
 
@@ -88,15 +91,15 @@
 	//				  ["#64c879", "#4f98d5", "#925eb0", "#38495c", "#ebc445", "#d3d3d3"]);
 
 	var queriesFullName = ['five dock', 'logan', 'parramatta road', 'yarrabilba'];
-
 	//import clusters for current visualisation requests
-	var parraTopic, fiveTopic;
 	d3.json("processedSTwitterData.json").then(function (jsonData) {
-	d3.csv("parra.csv").then(function (parraTopicData) {
-	d3.csv("five.csv").then(function (fiveTopicData) {
+	d3.csv("clusterData/parra.csv").then(function (parraCluster) {
+	d3.csv("clusterData/five.csv").then(function (fiveCluster) {
+	d3.csv("clusterData/logan.csv").then(function (loganCluster) {
+	d3.csv("clusterData/yarra.csv").then(function (yarraCluster) {
 
-	parraTopic = parraTopicData;
-	fiveTopic = fiveTopicData;
+	var currentCluster = 2; //manual selection of cluster
+	var clusterArray = [fiveCluster, loganCluster, parraCluster, yarraCluster];
 
 	var queries = Object.keys(jsonData);
 	var currentQuery = 0;
@@ -116,7 +119,7 @@
 
 	//title piece
 	d3.select("#qName").text("\'" + queriesFullName[currentQuery] + "\'");
-	d3.select("#qFound").text(dataset.length);
+	d3.select("#currentCluster").text(currentCluster);
 
 	var svg = d3.select("body")
 	.append("svg")
@@ -137,22 +140,7 @@
 		.attr("r", function (d) {
 			return 2;
 		})
-		.attr("fill", function (d, i) { //fill with cluster data
-		if(currentQuery == 0){
-			if(fiveTopic[i].Clusters == currentCluster){
-				return colourScale(fiveTopic[i].Clusters);
-			} else {
-				return interp((d.polarity + 1) / 2);
-			}
-		} else if (currentQuery == 2){
-			if(parraTopic[i].Clusters == currentCluster){
-				return colourScale(parraTopic[i].Clusters);
-			} else {
-				return interp((d.polarity + 1) / 2);
-			}
-		}
-		return interp((d.polarity + 1) / 2);
-	});
+		.attr("fill", function (d, i) { return fillFunction(d, i) });
 
 	//other graph elements
 	svg.append("g")
@@ -214,22 +202,7 @@
 		.attr("r", function (d) {
 			return 2;
 		})
-		.attr("fill", function (d, i) { //fill by clusters
-			if(currentQuery == 0){
-				if(fiveTopic[i].Clusters == currentCluster){
-					return colourScale(fiveTopic[i].Clusters);
-				} else {
-					return interp((d.polarity + 1) / 2);
-				}
-			} else if (currentQuery == 2){
-				if(parraTopic[i].Clusters == currentCluster){
-					return colourScale(parraTopic[i].Clusters);
-				} else {
-					return interp((d.polarity + 1) / 2);
-				}
-			}
-			return interp((d.polarity + 1) / 2); //default red/green
-		})
+		.attr("fill", function (d, i) { return fillFunction(d, i) })
 		.on("mouseover", function (d, i) {
 			hoverMethod(d, d3.select(this), i);
 		})
@@ -246,32 +219,14 @@
 		.attr("r", function (d) {
 			return 2;
 		})
-		.attr("fill", function (d, i) { //fill by cluster
-			if(currentQuery == 0){
-				if(fiveTopic[i].Clusters == currentCluster){
-					return colourScale(fiveTopic[i].Clusters);
-				} else {
-					return interp((d.polarity + 1) / 2);
-				}
-			} else if (currentQuery == 2){
-				if(parraTopic[i].Clusters == currentCluster){
-					return colourScale(parraTopic[i].Clusters);
-				} else {
-					return interp((d.polarity + 1) / 2);
-				}
-			}
-			return interp((d.polarity + 1) / 2);
-		});
+		.attr("fill", function (d, i) { return fillFunction(d, i) });
 		
 		//update title piece
 		d3.select("#qName").text("\'" + queriesFullName[currentQuery] + "\'");
 		d3.select("#qFound").text(dataset.length);
 	  });
-	});
-	});
-	}); //closing temporary csv imports
 
-	function hoverMethod(d, me, i) {
+			function hoverMethod(dIn, me, iIn) {
 		//get tooltip location
 		var xPosition = parseFloat(me.attr("cx"));
 		var yPosition = parseFloat(me.attr("cy"));
@@ -281,15 +236,34 @@
 		.style("left", xPosition + "px")
 		.style("top", yPosition + "px");
 		d3.select("#polarity")
-		.text('Polarity: ' + formatter(d.polarity) + " " + fiveTopic[i].Clusters);
+		.text(function(){
+			return ('Polarity: ' + formatter(dIn.polarity) + " " + clusterArray[currentQuery][iIn].Python_cosine);
+		});
 		d3.select("#subjectivity")
-		.text('Subjectivity: ' + formatter(d.subjectivity));
+		.text('Subjectivity: ' + formatter(dIn.subjectivity));
 		d3.select("#tweet_text")
-		.text(d.text);
+		.text(dIn.text);
 		d3.select("#tweet_words")
-		.text(d.cleanedWords.join(", "));
+		.text(dIn.cleanedWords.join(", "));
 		d3.select("#tooltip").classed("hidden", false);
 	}
+
+		function fillFunction(datum, index) {
+		if(clusterArray[currentQuery][index].Python_cosine == currentCluster){
+				return "#33A1DE";
+			} else {
+				return interp((datum.polarity + 1) / 2);
+			}
+
+	}
+
+	});
+	});
+	});
+	});
+	}); //closing temporary csv imports
+
+
   </script>
 </body>
 </html>

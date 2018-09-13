@@ -271,8 +271,13 @@ Each element has at most the following attributes:
 │   ├── twitter.py #twitter data collector
 │   └── twitterAnalysis.py #analyses raw twitter data
 └── visualisations
-    ├── sentimentScatter.html #plots documents by sentiment and subjectivity
-    ├── sentimentScatterWithTopic.html #plots documents by sentiment and subjectivity with topic colouring
+│   ├── visuals #visual screenshots
+│   │   ├── matlab clusters/ #old matlab cluster images 
+│   │   ├── python clusters/ #new python cluster images
+│   │   ├── sentiment/ #other sentiment only images
+│   ├── clusterData\ #raw cluster csv data
+│   ├── sentimentScatter.html #plots documents by sentiment and subjectivity
+│   ├── sentimentScatterWithTopic.html #plots documents by sentiment and subjectivity with topic colouring
 ```
 
 ## Avenues explored
